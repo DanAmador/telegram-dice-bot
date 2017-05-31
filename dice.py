@@ -51,7 +51,7 @@ def dice_roll(bot, update):
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {} percentage dice ".format(query[0]),
                                                 input_message_content=InputTextMessageContent(d_results)))
     else:
-        results.append(InlineQueryResultArticle(id=uuid4(), title="Please use the correct nomenclature",
+        results.append(InlineQueryResultArticle(id=uuid4(), title="Please use the correct nomenclature, for instance 1d20",
                                                 input_message_content=InputTextMessageContent(
                                                         "{} is not a correct nomenclature, for more info visit @tdice_bot".format(query_string))))
     update.inline_query.answer(results, cache_time=0)
