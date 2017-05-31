@@ -5,7 +5,7 @@ import random, time, os
 from datetime import datetime
 import re
 from uuid import uuid4
-
+import quantumrandom
 from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageContent
 from telegram.ext import Updater, CommandHandler, InlineQueryHandler
 
@@ -32,9 +32,8 @@ def dice_roll(bot, update):
         query = [int(i) for i in re.findall(r'\d+', query_string)]
         d_results = "Roll {} {}-faced die \n".format(query[0], query[1])
         for i in range(query[0]):
-            dt = datetime.now().microsecond
-            result = int((rng.random( ) * dt * 100) % query[1])
-            d_results += "{}.- {}% \n".format(i + 1, result)
+            result = quantumrandom.randint(1, max=query[1])
+            d_results += "{}.- {} \n".format(i + 1, result)
 
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {}   {}-faced die ".format(query[0], query[1]),
                                                 input_message_content=InputTextMessageContent(d_results)))
@@ -43,9 +42,8 @@ def dice_roll(bot, update):
         d_results = "Roll {} percentage die \n".format(query[0])
 
         for i in range(query[0]):
-            dt = datetime.now().microsecond
-            result = int((rng.random() * dt * 100) % 100)
-            logging.log(logging.DEBUG, ("Result is ", result , " and time is " , dt ))
+            result = quantumrandom.randint(1, 100)
+
             d_results += "{}.- {}% \n".format(i + 1, result)
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {} percentage die ".format(query[0]),
                                                 input_message_content=InputTextMessageContent(d_results)))
@@ -72,6 +70,3 @@ def initialize(token):
     logger.setLevel(logging.DEBUG)
     updater.start_polling()
     updater.idle()
-
-
-
