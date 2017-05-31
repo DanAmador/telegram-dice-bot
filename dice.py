@@ -8,8 +8,9 @@ from uuid import uuid4
 import quantumrandom
 from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageContent
 from telegram.ext import Updater, CommandHandler, InlineQueryHandler
+import requests
 
-
+random_url = "https://qrng.anu.edu.au/API/jsonI.php?length={}&type=uint8"
 def escape_markdown(text):
     """Helper function to escape telegram markup symbols"""
     escape_chars = '\*_`\['
@@ -31,20 +32,22 @@ def dice_roll(bot, update):
     if re.search("\d+[d]+\d", query_string) is not None:
         query = [int(i) for i in re.findall(r'\d+', query_string)]
         d_results = "Roll {} {}-faced die \n".format(query[0], query[1])
+        response = requests.get(random_url.format(query[0]))
         for i in range(query[0]):
-            result = quantumrandom.randint(1, max=query[1])
-            d_results += "{}.- {} \n".format(i + 1, result)
+            result = response.json()['data'][i]
+            d_results += "{}.- {} \n".format(i + 1, (result % query[1]) + 1 )
 
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {}   {}-faced die ".format(query[0], query[1]),
                                                 input_message_content=InputTextMessageContent(d_results)))
     elif re.search("\d+[d]+[p]", query_string) is not None:
         query = [int(i) for i in re.findall(r'\d+', query_string)]
+
         d_results = "Roll {} percentage die \n".format(query[0])
 
+        response = requests.get(random_url.format(query[0]))
         for i in range(query[0]):
-            result = quantumrandom.randint(1, 100)
-
-            d_results += "{}.- {}% \n".format(i + 1, result)
+            result = response.json()['data'][i]
+            d_results += "{}.- {}% \n".format(i + 1, (result % 101))
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {} percentage die ".format(query[0]),
                                                 input_message_content=InputTextMessageContent(d_results)))
     else:
