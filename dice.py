@@ -26,7 +26,7 @@ def random_number(limit, amount):
 def dice_roll(bot, update):
     query_string = update.inline_query.query
     results = []
-    logging.log(logging.DEBUG,msg=("Request from " , update.inline_query.from_user.id, " at ", time.time()))
+    logging.log(logging.DEBUG, msg=("Request from ", update.inline_query.from_user.id, " at ", time.time()))
     if re.search("\d+[d]+\d", query_string) is not None:
         query = [int(i) for i in re.findall(r'\d+', query_string)]
         d_results = "Roll {} {}-faced die \n".format(query[0], query[1])
@@ -51,7 +51,7 @@ def dice_roll(bot, update):
         results.append(InlineQueryResultArticle(id=uuid4(), title="Please use the correct nomenclature",
                                                 input_message_content=InputTextMessageContent(
                                                         "{} is not a correct nomenclature, for more info visit @tdice_bot".format(query_string))))
-    update.inline_query.answer(results)
+    update.inline_query.answer(results, cache_time=0)
 
 
 cryptogen = random.SystemRandom()
