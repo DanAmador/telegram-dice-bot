@@ -2,7 +2,7 @@
 
 import logging
 import random, time, os
-import secrets
+from datetime import datetime
 import re
 from uuid import uuid4
 
@@ -32,10 +32,10 @@ def dice_roll(bot, update):
         query = [int(i) for i in re.findall(r'\d+', query_string)]
         d_results = "Roll {} {}-faced die \n".format(query[0], query[1])
         for i in range(query[0]):
-            result = rng.randint(1, query[1])
+            dt = datetime.now().microsecond
+            result = int((rng.random * dt * 100) % query[1])
             d_results += "{}.- {}% \n".format(i + 1, result)
 
-        d_results += "{}.- {} \n".format(i + 1, result)
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {}   {}-faced die ".format(query[0], query[1]),
                                                 input_message_content=InputTextMessageContent(d_results)))
     elif re.search("\d+[d]+[p]", query_string) is not None:
@@ -43,13 +43,9 @@ def dice_roll(bot, update):
         d_results = "Roll {} percentage die \n".format(query[0])
 
         for i in range(query[0]):
-            result = int((rng.randint(1, 1000) * time.process_time().as_integer_ratio()) % 100)
-            print("")
-            print("")
-            print("Fucking result is " , result)
-            print("")
-            print("")
-
+            dt = datetime.now().microsecond
+            result = int((rng.random * dt * 100) % 100)
+            logging.log(logging.DEBUG, ("Result is ", result , " and time is " , dt ))
             d_results += "{}.- {}% \n".format(i + 1, result)
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {} percentage die ".format(query[0]),
                                                 input_message_content=InputTextMessageContent(d_results)))
@@ -59,8 +55,11 @@ def dice_roll(bot, update):
                                                         "{} is not a correct nomenclature, for more info visit @tdice_bot".format(query_string))))
     update.inline_query.answer(results)
 
+
 random.seed(time.process_time())
 rng = random.SystemRandom()
+
+
 def initialize(token):
     logging.basicConfig(level=logging.DEBUG)
 
