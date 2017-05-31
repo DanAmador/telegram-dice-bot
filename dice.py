@@ -19,7 +19,9 @@ For example 1d6 returns a random value from 1 to 6 or 2dp returns 2 random perce
 
 
 def random_number(limit, amount):
-    sample = cryptogen.sample(range(limit), amount)
+    sample = []
+    for i in range(amount):
+        sample.append(cryptogen.randint(1, limit))
     logging.log(logging.DEBUG, str(sample))
     return sample
 
@@ -35,7 +37,7 @@ def dice_roll(bot, update):
         for i in range(query[0]):
             d_results += "{}.- {} \n".format(i + 1, result[i])
 
-        results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {}   {}-faced die ".format(query[0], query[1]),
+        results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {}   {}-faced dice ".format(query[0], query[1]),
                                                 input_message_content=InputTextMessageContent(d_results)))
 
     elif re.search("\d+[d]+[p]", query_string) is not None:
@@ -46,7 +48,7 @@ def dice_roll(bot, update):
 
         for i in range(query[0]):
             d_results += "{}.- {}% \n".format(i + 1, result[i])
-        results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {} percentage die ".format(query[0]),
+        results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {} percentage dice ".format(query[0]),
                                                 input_message_content=InputTextMessageContent(d_results)))
     else:
         results.append(InlineQueryResultArticle(id=uuid4(), title="Please use the correct nomenclature",
