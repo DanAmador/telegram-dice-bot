@@ -16,8 +16,8 @@ def start(bot, update):
 For example 1d6 returns a random value from 1 to 6 or 2d20 returns 2 random values between 1 and 20""")
 
 
-def random_number(limit):
-    return int(numpy.random.random_integers(1, high=limit))
+def random_number(limit, amount):
+    return  random.sample(range(limit), amount)
 
 
 def dice_roll(bot, update):
@@ -27,9 +27,9 @@ def dice_roll(bot, update):
     if re.search("\d+[d]+\d", query_string) is not None:
         query = [int(i) for i in re.findall(r'\d+', query_string)]
         d_results = "Roll {} {}-faced die \n".format(query[0], query[1])
+        result = random_number(query[1], query[0])
         for i in range(query[0]):
-            result = random_number(query[1])
-            d_results += "{}.- {} \n".format(i + 1, result)
+            d_results += "{}.- {} \n".format(i + 1, result[i])
 
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {}   {}-faced die ".format(query[0], query[1]),
                                                 input_message_content=InputTextMessageContent(d_results)))
@@ -38,10 +38,10 @@ def dice_roll(bot, update):
         query = [int(i) for i in re.findall(r'\d+', query_string)]
 
         d_results = "Roll {} percentage die \n".format(query[0])
+        result = random_number(100, query[0])
 
         for i in range(query[0]):
-            result = random_number(100)
-            d_results += "{}.- {}% \n".format(i + 1, result)
+            d_results += "{}.- {}% \n".format(i + 1, result[i])
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {} percentage die ".format(query[0]),
                                                 input_message_content=InputTextMessageContent(d_results)))
     else:
