@@ -33,7 +33,7 @@ def dice_roll(bot, update):
         d_results = "Roll {} {}-faced die \n".format(query[0], query[1])
         for i in range(query[0]):
             dt = datetime.now().microsecond
-            result = int((rng.random * dt * 100) % query[1])
+            result = int((rng.random( ) * dt * 100) % query[1])
             d_results += "{}.- {}% \n".format(i + 1, result)
 
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {}   {}-faced die ".format(query[0], query[1]),
@@ -44,7 +44,7 @@ def dice_roll(bot, update):
 
         for i in range(query[0]):
             dt = datetime.now().microsecond
-            result = int((rng.random * dt * 100) % 100)
+            result = int((rng.random() * dt * 100) % 100)
             logging.log(logging.DEBUG, ("Result is ", result , " and time is " , dt ))
             d_results += "{}.- {}% \n".format(i + 1, result)
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {} percentage die ".format(query[0]),
