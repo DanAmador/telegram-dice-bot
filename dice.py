@@ -29,6 +29,7 @@ def dice_roll(bot, update):
     query_string = update.inline_query.query
     logging.log(logging.DEBUG, time.clock())
     results = []
+    result = 0
     if re.search("\d+[d]+\d", query_string) is not None:
         query = [int(i) for i in re.findall(r'\d+', query_string)]
         d_results = "Roll {} {}-faced die \n".format(query[0], query[1])
@@ -39,6 +40,7 @@ def dice_roll(bot, update):
 
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {}   {}-faced die ".format(query[0], query[1]),
                                                 input_message_content=InputTextMessageContent(d_results)))
+
     elif re.search("\d+[d]+[p]", query_string) is not None:
         query = [int(i) for i in re.findall(r'\d+', query_string)]
 
