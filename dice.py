@@ -6,7 +6,7 @@ import re
 from uuid import uuid4
 from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageContent
 from telegram.ext import Updater, CommandHandler, InlineQueryHandler
-
+import numpy
 
 def start(bot, update):
     update.message.reply_text("""Returns a random value. To use this bot send and inline query with the following format:
@@ -17,7 +17,7 @@ For example 1d6 returns a random value from 1 to 6 or 2d20 returns 2 random valu
 
 
 def random_number(limit):
-    return cryptogen.randint(1, limit)
+    return int(numpy.random.random_integers(1, high=limit))
 
 
 def dice_roll(bot, update):
