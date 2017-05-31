@@ -35,7 +35,7 @@ def dice_roll(bot, update):
         response = requests.get(random_url.format(query[0]))
         for i in range(query[0]):
             result = response.json()['data'][i]
-            d_results += "{}.- {} \n".format(i + 1, (result % query[1]) + 1 )
+            d_results += "{}.- {} \n".format(i + 1, int(result % query[1]) + 1 )
 
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {}   {}-faced die ".format(query[0], query[1]),
                                                 input_message_content=InputTextMessageContent(d_results)))
@@ -47,7 +47,7 @@ def dice_roll(bot, update):
         response = requests.get(random_url.format(query[0]))
         for i in range(query[0]):
             result = response.json()['data'][i]
-            d_results += "{}.- {}% \n".format(i + 1, (result % 101))
+            d_results += "{}.- {}% \n".format(i + 1, int(result % 101))
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {} percentage die ".format(query[0]),
                                                 input_message_content=InputTextMessageContent(d_results)))
     else:

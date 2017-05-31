@@ -1,3 +1,4 @@
+requests==2.13.0
+redis==2.10.5
 telegram==0.0.1
 python-telegram-bot==6.1b0
-quantumrandom==1.9.0
