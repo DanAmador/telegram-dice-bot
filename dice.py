@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
 
 import logging
-import random, time
+import random
 import re
+import time
 from uuid import uuid4
-from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageContent
+from telegram import InlineQueryResultArticle, InputTextMessageContent
 from telegram.ext import Updater, CommandHandler, InlineQueryHandler
-import numpy
 
 
 def start(bot, update):
-    update.message.reply_text("""Returns a random value. To use this bot send and inline query with the following format:
+    update.message.reply_text("""Returns a random value.
+    To use this bot send and inline query with the following format:
 
-@tdice_bot  #d#             where # represents a number or the second number can be replaced for a p to receive a percentage roll.
+@tdice_bot  #d#             where # represents a number where the second number can be replaced for a p to receive a percentage roll.
 
-For example 1d6 returns a random value from 1 to 6 or 2d20 returns 2 random values between 1 and 20""")
+For example 1d6 returns a random value from 1 to 6 or 2dp returns 2 random percentage rolls""")
 
 
 def random_number(limit, amount):
-    sample = random.sample(range(limit), amount)
+    sample = cryptogen.sample(range(limit), amount)
     logging.log(logging.DEBUG, str(sample))
     return sample
 
@@ -29,7 +30,7 @@ def dice_roll(bot, update):
     logging.log(logging.DEBUG, msg=("Request from ", update.inline_query.from_user.id, " at ", time.time()))
     if re.search("\d+[d]+\d", query_string) is not None:
         query = [int(i) for i in re.findall(r'\d+', query_string)]
-        d_results = "Roll {} {}-faced die \n".format(query[0], query[1])
+        d_results = "Roll {} {}-faced dice: \n".format(query[0], query[1])
         result = random_number(query[1], query[0])
         for i in range(query[0]):
             d_results += "{}.- {} \n".format(i + 1, result[i])
@@ -40,7 +41,7 @@ def dice_roll(bot, update):
     elif re.search("\d+[d]+[p]", query_string) is not None:
         query = [int(i) for i in re.findall(r'\d+', query_string)]
 
-        d_results = "Roll {} percentage die \n".format(query[0])
+        d_results = "Roll {} percentage dice: \n".format(query[0])
         result = random_number(100, query[0])
 
         for i in range(query[0]):
