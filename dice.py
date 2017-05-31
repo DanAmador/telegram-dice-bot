@@ -1,20 +1,11 @@
 #!/usr/bin/env python3
 
 import logging
-import random, time, os
-from datetime import datetime
+import random, time
 import re
 from uuid import uuid4
-import quantumrandom
 from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageContent
 from telegram.ext import Updater, CommandHandler, InlineQueryHandler
-import requests
-
-random_url = "https://qrng.anu.edu.au/API/jsonI.php?length={}&type=uint8"
-def escape_markdown(text):
-    """Helper function to escape telegram markup symbols"""
-    escape_chars = '\*_`\['
-    return re.sub(r'([%s])' % escape_chars, r'\\\1', text)
 
 
 def start(bot, update):
@@ -25,18 +16,20 @@ def start(bot, update):
 For example 1d6 returns a random value from 1 to 6 or 2d20 returns 2 random values between 1 and 20""")
 
 
+def random_number(limit):
+    return cryptogen.randint(1, limit)
+
+
 def dice_roll(bot, update):
     query_string = update.inline_query.query
     logging.log(logging.DEBUG, time.clock())
     results = []
-    result = 0
     if re.search("\d+[d]+\d", query_string) is not None:
         query = [int(i) for i in re.findall(r'\d+', query_string)]
         d_results = "Roll {} {}-faced die \n".format(query[0], query[1])
-        response = requests.get(random_url.format(query[0]))
         for i in range(query[0]):
-            result = response.json()['data'][i]
-            d_results += "{}.- {} \n".format(i + 1, int(result % query[1]) + 1 )
+            result = random_number(query[1])
+            d_results += "{}.- {} \n".format(i + 1, result)
 
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {}   {}-faced die ".format(query[0], query[1]),
                                                 input_message_content=InputTextMessageContent(d_results)))
@@ -46,10 +39,9 @@ def dice_roll(bot, update):
 
         d_results = "Roll {} percentage die \n".format(query[0])
 
-        response = requests.get(random_url.format(query[0]))
         for i in range(query[0]):
-            result = response.json()['data'][i]
-            d_results += "{}.- {}% \n".format(i + 1, int(result % 101))
+            result = random_number(100)
+            d_results += "{}.- {}% \n".format(i + 1, result)
         results.append(InlineQueryResultArticle(id=uuid4(), title="Roll {} percentage die ".format(query[0]),
                                                 input_message_content=InputTextMessageContent(d_results)))
     else:
@@ -59,8 +51,7 @@ def dice_roll(bot, update):
     update.inline_query.answer(results)
 
 
-random.seed(time.process_time())
-rng = random.SystemRandom()
+cryptogen = random.SystemRandom()
 
 
 def initialize(token):
