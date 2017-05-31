@@ -74,5 +74,4 @@ def initialize(token):
     updater.idle()
 
 
-if __name__ == '__main__':
-    initialize()
+
