@@ -8,6 +8,7 @@ from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageConten
 from telegram.ext import Updater, CommandHandler, InlineQueryHandler
 import numpy
 
+
 def start(bot, update):
     update.message.reply_text("""Returns a random value. To use this bot send and inline query with the following format:
 
@@ -17,13 +18,15 @@ For example 1d6 returns a random value from 1 to 6 or 2d20 returns 2 random valu
 
 
 def random_number(limit, amount):
-    return  random.sample(range(limit), amount)
+    sample = random.sample(range(limit), amount)
+    logging.log(logging.DEBUG, sample)
+    return sample
 
 
 def dice_roll(bot, update):
     query_string = update.inline_query.query
-    logging.log(logging.DEBUG, time.clock())
     results = []
+    logging.log(logging.DEBUG, "Request from " , update.inline_query.from_user.id, " at ", time.time())
     if re.search("\d+[d]+\d", query_string) is not None:
         query = [int(i) for i in re.findall(r'\d+', query_string)]
         d_results = "Roll {} {}-faced die \n".format(query[0], query[1])
