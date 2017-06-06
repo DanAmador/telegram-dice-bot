@@ -15,3 +15,6 @@ This is a small bot used to simulated dice rolls using DnD's dice convention and
 * #### Query @tdice_bot 4dp
 * Result:
     * ![](./demo/result2.png)
+    
+    
+You can download it [here](https://storebot.me/bot/tdice_bot)
